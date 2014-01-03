@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	
+    <array name="font_size_texts">
+        <item>XS (14)</item>
+        <item>S (16)</item>
+        <item>M (18)</item>
+        <item>L (20)</item>
+        <item>XL (22)</item>
+    </array>
+    <integer-array name="font_size">
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>22</item>
+    </integer-array>
+
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">HDSpevnik</string>
+    <string name="title_bible">Spevník - Šťastný Deň</string>
+    <string name="button_book">Zoznam</string>
+    <string name="title_activity_scripture">Spevník - Šťastný Deň</string>
+    <string name="pick_activity_option">Späť na Výber</string>
+    <string name="exit_option">Koniec</string>
+    <string name="menu_settings">Settings</string>
+    <string name="descrition_back">Pre ukončenie aplikácie stlačte \"Späť\"</string>
+    <string name="night_day_mode_title">Nočný/denný režim</string>
+    <string name="title_updating">Aktualizujem...</string>
+
+    <color name="night_back">#222222</color>
+    <color name="night_text">#C0C0C0</color>
+    <color name="day_back">#FFFFFF</color>
+    <color name="day_text">#000000</color>
+
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
+    <string name="ok">OK</string>
+    
+    <string name="title_activity_history">História</string>
+    <string name="history_activity_option">História</string>
+    
+    <string name="title_activity_search">Vyhľadávanie</string>
+    <string name="search_activity_option">Vyhľadávanie</string>
+    <string name="button_search">Vyhľadať</string>
+    <string name="search_cb_bible_whole">Celá Biblia</string>
+    <string name="search_cb_old_testament">Stará zmluva</string>
+    <string name="search_cb_new_testament">Nová zmluva</string>
+    <string name="search_string_out_of_range">Rozsah znakov:</string>
+    <string name="search_string_invalid_characters">Nepoužívajte znak "*"</string>
+    <string name="title_activity_search_results">Výsledky vyhľadávania</string>
+    <string name="search_results_nothing_found">Neboli nájdené žiadne výsledky pre:</string>
+    <string name="search_results_too_many1">Príliš veľa výsledkov:</string>
+    <string name="search_results_too_many2">Zobrazených:</string>
+    
+    <string name="title_activity_settings">Nastavenia</string>
+    <string name="settigs_activity_option">Nastavenia</string>
+    <string name="setting_keepScreenOn">Nezhasínať obrazovku</string>
+    <string name="setting_keepScreenOn_summ">Nezhasínať obrazovku počas zobrazeného biblického textu</string>
+    <string name="setting_fontSize">Veľkosť písma</string>
+    <string name="setting_fontSize_summ">Veľkosť písma biblického textu</string>
+    <string name="title_activity_about">Info</string>
+    <string name="about_activity_option">Info</string>
+    <string name="about_text1">Mládežnícky spevník</string>
+
+</resources>

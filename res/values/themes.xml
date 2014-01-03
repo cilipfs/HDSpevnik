@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<style name="NightMode">
+		<item name="android:textColor">@color/night_text</item>
+    	<!-- <item name="android:background">@color/night_back</item>
+	    <item name="android:windowBackground">@color/night_back</item>
+	    <item name="android:colorBackground">@color/night_back</item> -->
+  	</style>
+  	<style name="DayMode">
+    	<item name="android:textColor">@color/day_text</item>
+    	<!-- <item name="android:background">@color/day_back</item>
+	    <item name="android:windowBackground">@color/day_back</item>
+	    <item name="android:colorBackground">@color/day_back</item> -->
+  	</style>
+</resources> 
