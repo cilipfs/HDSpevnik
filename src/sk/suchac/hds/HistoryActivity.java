@@ -32,7 +32,7 @@ public class HistoryActivity extends Activity {
 	private DAO datasource;
 	
 	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
-	public static final String PREFS = "HbePrefsFile";
+	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	
 	private static Resources resources;
@@ -123,7 +123,7 @@ public class HistoryActivity extends Activity {
 	    	tr.addView(recordOpen);
 			
 	    	TextView text = new TextView(thisActivity);
-	    	text.setText(record.getDateString().replace(" ", " - "));
+	    	text.setText(record.getDateString().replace(" ", "\n"));
 	    	text.setPadding(5, 0, 0, 0);
 	    	tr.addView(text);
 	    	
@@ -139,7 +139,11 @@ public class HistoryActivity extends Activity {
 	
 	private String getSongTitle(int songNumber) {
 		Song song = datasource.getSongByNumber(songNumber);
- 	   	return song.getNumber() + " " + song.getTitle();
+		String songTitle = song.getTitle();
+		if (songTitle.length() > 20) {
+			songTitle = songTitle.substring(0, 20).trim() + "...";
+		}
+ 	   	return song.getNumber() + " " + songTitle;
 	}
 	
 	private boolean isNightMode() {

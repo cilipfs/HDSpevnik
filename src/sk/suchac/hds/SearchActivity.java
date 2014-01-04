@@ -46,7 +46,7 @@ public class SearchActivity extends Activity {
 	
 	private static Resources resources;
 	
-	public static final String PREFS = "HbePrefsFile";
+	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	
 	private static final int OLD_TESTAMENT_BOOKS = 39;

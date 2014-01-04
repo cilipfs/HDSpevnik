@@ -17,7 +17,7 @@ public class AboutActivity extends Activity {
 	
 	private Resources resources;
 	
-	public static final String PREFS = "HbePrefsFile";
+	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 
 	@Override

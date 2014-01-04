@@ -116,7 +116,7 @@ public class ScriptureActivity extends Activity {
 	private void displayScriptureText() {
 		Song song = datasource.getSongById(pickedSong.getSong());
 		textField.append(Html.fromHtml(song.getText()));
-		this.setTitle(song.getTitle());
+		this.setTitle(song.getNumber() + " " + song.getTitle());
 	}
 	
 	// onClick for buttonAbout, buttonSeb
