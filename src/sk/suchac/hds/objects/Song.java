@@ -1,7 +1,14 @@
 package sk.suchac.hds.objects;
 
+import java.text.CollationKey;
+import java.text.Collator;
+import java.util.Locale;
 
-public class Song {
+
+public class Song implements Comparable<Song> {
+	
+	private static final Collator collator = Collator.getInstance(Locale.GERMAN);
+	private CollationKey key;
 	
 	private int _id;
 	private String number;
@@ -25,12 +32,17 @@ public class Song {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+		this.key = collator.getCollationKey(title);
 	}
 	public String getText() {
 		return text;
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+	
+	public int compareTo(Song song) {
+		return key.compareTo(song.key);
 	}
 	
 }

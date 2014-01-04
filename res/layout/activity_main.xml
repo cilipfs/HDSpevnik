@@ -16,12 +16,27 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/button_book"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="46dp"
-                android:text="@string/button_book" />
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/button_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="46dp"
+                    android:text="@string/button_register" />
+
+                <Button
+                    android:id="@+id/button_book"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="46dp"
+                    android:text="@string/button_book" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView_title_bible"

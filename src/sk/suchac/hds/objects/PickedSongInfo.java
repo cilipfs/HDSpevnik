@@ -8,8 +8,8 @@ public class PickedSongInfo implements Serializable {
 	
 	public PickedSongInfo() {}
 	
-	public PickedSongInfo(int bookId) {
-		this.song = bookId;
+	public PickedSongInfo(int song) {
+		this.song = song;
 	}
 	
 	private int song;

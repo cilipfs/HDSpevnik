@@ -4,6 +4,7 @@
     <string name="app_name">HDSpevnik</string>
     <string name="title_bible">Spevník - Šťastný Deň</string>
     <string name="button_book">Zoznam</string>
+    <string name="button_register">Register</string>
     <string name="title_activity_scripture">Spevník - Šťastný Deň</string>
     <string name="pick_activity_option">Späť na Výber</string>
     <string name="exit_option">Koniec</string>

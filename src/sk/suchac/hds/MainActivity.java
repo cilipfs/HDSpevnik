@@ -1,7 +1,10 @@
 package sk.suchac.hds;
 
+import java.util.List;
+
 import sk.suchac.hds.db.DAO;
 import sk.suchac.hds.objects.PickedSongInfo;
+import sk.suchac.hds.objects.Song;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +26,9 @@ public class MainActivity extends Activity {
 	MainActivity thisActivity;
 	
 	private AlertDialog bookDialog;
+	private AlertDialog registerDialog;
 	private Button buttonSongList;
+	private Button buttonSongRegister;
 	private View background;
 	private TextView title;
 	private TextView backDescription;
@@ -117,6 +122,8 @@ public class MainActivity extends Activity {
 	private void initializeElements() {
 		buttonSongList = (Button) findViewById(R.id.button_book);
         buttonSongList.setOnClickListener(buttonBookListener);
+        buttonSongRegister = (Button) findViewById(R.id.button_register);
+        buttonSongRegister.setOnClickListener(buttonRegisterListener);
         background = findViewById(R.id.main_layout);
     	title = (TextView) findViewById(R.id.textView_title_bible);
     	backDescription = (TextView) findViewById(R.id.textView_description_back);
@@ -152,22 +159,55 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             });
             bookDialog = builder.create();
             
+            final List<Song> songsAlphabetical = datasource.getSongTitleAlphabeticalList();
+            String[] songsAlphabeticalArray = createSongsAlphabeticalArray(songsAlphabetical);
+  		    
+            AlertDialog.Builder registerBuilder = new AlertDialog.Builder(thisActivity);
+            registerBuilder.setItems(songsAlphabeticalArray, new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int which) {
+        			datasource.open();
+        			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+				    PickedSongInfo sp = new PickedSongInfo(songsAlphabetical.get(which).get_id());
+					intent.putExtra(INTENT_PICKED_SONG, sp);
+				    startActivity(intent);
+        			datasource.close();
+            	}
+            });
+            registerDialog = registerBuilder.create();
+            
             datasource.close();
             updateDbDone = true;
         }          
     }
+
+	private String[] createSongsAlphabeticalArray(List<Song> songsAlphabetical) {
+		String[] array = new String[songsAlphabetical.size()];
+		for (int i = 0; i < songsAlphabetical.size(); i++) {
+			Song song = songsAlphabetical.get(i);
+			array[i] = song.getTitle() + " " + song.getNumber();
+		}
+		return array;
+	}
 	
 	private void disableButtons() {
 		buttonSongList.setEnabled(false);
+		buttonSongRegister.setEnabled(false);
 	}
 	
 	private void enableButtons() {
 		buttonSongList.setEnabled(true);
+		buttonSongRegister.setEnabled(true);
 	}
 	
 	private OnClickListener buttonBookListener = new OnClickListener() {
 	    public void onClick(View v) {
 	      bookDialog.show();
+	    }
+	};
+	
+	private OnClickListener buttonRegisterListener = new OnClickListener() {
+	    public void onClick(View v) {
+	      registerDialog.show();
 	    }
 	};
 	

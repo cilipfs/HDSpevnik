@@ -1,7 +1,10 @@
 package sk.suchac.hds.db;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import sk.suchac.hds.objects.SearchResult;
 import sk.suchac.hds.objects.Song;
@@ -64,6 +67,23 @@ public class DAO {
 		  songs.toArray(array);
 		  
 		  return array;
+	  }
+	  
+	  public List<Song> getSongTitleAlphabeticalList() {
+		  List<Song> songs = new ArrayList<Song>();
+		  Cursor cursor = database.query("SONG",
+				allSongColumns, null, null, null, null, null);
+		  cursor.moveToFirst();
+		  while (!cursor.isAfterLast()) {
+			  Song song = cursorToSong(cursor);
+		      songs.add(song);
+		      cursor.moveToNext();
+		  }
+		  cursor.close();
+		  
+		  Collections.sort(songs);
+		  
+		  return songs;
 	  }
 	  
 	  public Song getSongById(int songId) {
