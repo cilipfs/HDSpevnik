@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	
@@ -28,6 +29,8 @@ public class MainActivity extends Activity {
 	private TextView backDescription;
 	
 	private DAO datasource;
+	
+	private boolean updateDbDone = false;
 	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
@@ -68,6 +71,13 @@ public class MainActivity extends Activity {
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if (!updateDbDone) {
+			Toast toast = Toast.makeText(getApplicationContext(), 
+	    			getResources().getString(R.string.updating_so_wait), 
+	    			Toast.LENGTH_SHORT);
+	    	toast.show();
+			return true;
+		}
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    	case R.id.night_day_mode:
@@ -143,6 +153,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             bookDialog = builder.create();
             
             datasource.close();
+            updateDbDone = true;
         }          
     }
 	
