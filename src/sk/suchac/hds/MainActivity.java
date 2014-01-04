@@ -17,6 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +37,7 @@ public class MainActivity extends Activity {
 	private View background;
 	private TextView title;
 	private TextView backDescription;
+	private AutoCompleteTextView mainSearch;
 	
 	private DAO datasource;
 	
@@ -127,6 +133,7 @@ public class MainActivity extends Activity {
         background = findViewById(R.id.main_layout);
     	title = (TextView) findViewById(R.id.textView_title_bible);
     	backDescription = (TextView) findViewById(R.id.textView_description_back);
+    	mainSearch = (AutoCompleteTextView) findViewById(R.id.mainSearch);
 	}
 	
 private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
@@ -145,9 +152,11 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
         	title.setText(R.string.title_bible);
         	
         	picked.setSong(-1);
+        	
+        	String[] songTitleArray = datasource.getSongTitleArray();
             
             AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-            builder.setItems(datasource.getSongTitleArray(), new DialogInterface.OnClickListener() {
+            builder.setItems(songTitleArray, new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int which) {
         			datasource.open();
         			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
@@ -175,10 +184,35 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             });
             registerDialog = registerBuilder.create();
             
+            ArrayAdapter<String> adapter = 
+        	        new ArrayAdapter<String>(thisActivity, android.R.layout.simple_list_item_1, songTitleArray);
+        	mainSearch.setAdapter(adapter);
+    		mainSearch.setOnItemClickListener(mainSearchListener);
+            
             datasource.close();
             updateDbDone = true;
         }          
     }
+
+	private OnItemClickListener mainSearchListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			mainSearch.setText("");
+			
+			String item = parent.getItemAtPosition(position).toString();
+			int spacePosition = item.indexOf(" ");
+			item = item.substring(0, spacePosition);
+			
+			datasource.open();
+			Song song = datasource.getSongByNumber(Integer.valueOf(item));
+			datasource.close();
+			
+			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+		    PickedSongInfo sp = new PickedSongInfo(song.get_id());
+			intent.putExtra(INTENT_PICKED_SONG, sp);
+		    startActivity(intent);
+		}
+	};
 
 	private String[] createSongsAlphabeticalArray(List<Song> songsAlphabetical) {
 		String[] array = new String[songsAlphabetical.size()];
@@ -192,11 +226,13 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 	private void disableButtons() {
 		buttonSongList.setEnabled(false);
 		buttonSongRegister.setEnabled(false);
+		mainSearch.setEnabled(false);
 	}
 	
 	private void enableButtons() {
 		buttonSongList.setEnabled(true);
 		buttonSongRegister.setEnabled(true);
+		mainSearch.setEnabled(true);
 	}
 	
 	private OnClickListener buttonBookListener = new OnClickListener() {
@@ -228,12 +264,14 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 		background.setBackgroundColor(getResources().getColor(R.color.night_back));
     	title.setTextColor(getResources().getColor(R.color.night_text));
     	backDescription.setTextColor(getResources().getColor(R.color.night_text));
+    	mainSearch.setBackgroundResource(R.color.night_text);
 	}
 	
 	private void applyDayMode() {
 		background.setBackgroundColor(getResources().getColor(R.color.day_back));
     	title.setTextColor(getResources().getColor(R.color.day_text));
     	backDescription.setTextColor(getResources().getColor(R.color.day_text));
+    	mainSearch.setBackgroundResource(R.color.night_text);
 	}
 	
 	private void saveNightModeState(boolean night) {

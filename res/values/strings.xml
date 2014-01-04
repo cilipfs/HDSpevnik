@@ -39,6 +39,8 @@
     <string name="search_results_too_many1">Príliš veľa výsledkov:</string>
     <string name="search_results_too_many2">Zobrazených:</string>
     
+    <string name="mainSearch_title">Vyhľadať v názvoch a číslach</string>
+    
     <string name="title_activity_settings">Nastavenia</string>
     <string name="settigs_activity_option">Nastavenia</string>
     <string name="setting_keepScreenOn">Nezhasínať obrazovku</string>
