@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -36,8 +35,8 @@ public class MainActivity extends Activity {
 	private Button buttonSongRegister;
 	private View background;
 	private TextView title;
-	private TextView backDescription;
 	private AutoCompleteTextView mainSearch;
+	ArrayAdapter<String> adapter;
 	
 	private DAO datasource;
 	
@@ -132,7 +131,6 @@ public class MainActivity extends Activity {
         buttonSongRegister.setOnClickListener(buttonRegisterListener);
         background = findViewById(R.id.main_layout);
     	title = (TextView) findViewById(R.id.textView_title_bible);
-    	backDescription = (TextView) findViewById(R.id.textView_description_back);
     	mainSearch = (AutoCompleteTextView) findViewById(R.id.mainSearch);
 	}
 	
@@ -184,7 +182,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             });
             registerDialog = registerBuilder.create();
             
-            ArrayAdapter<String> adapter = 
+            adapter = 
         	        new ArrayAdapter<String>(thisActivity, android.R.layout.simple_list_item_1, songTitleArray);
         	mainSearch.setAdapter(adapter);
     		mainSearch.setOnItemClickListener(mainSearchListener);
@@ -197,20 +195,20 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 	private OnItemClickListener mainSearchListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			mainSearch.setText("");
-			
-			String item = parent.getItemAtPosition(position).toString();
+			String item = mainSearch.getText().toString();
 			int spacePosition = item.indexOf(" ");
 			item = item.substring(0, spacePosition);
+			mainSearch.setText("");
 			
 			datasource.open();
 			Song song = datasource.getSongByNumber(Integer.valueOf(item));
-			datasource.close();
 			
 			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
 		    PickedSongInfo sp = new PickedSongInfo(song.get_id());
 			intent.putExtra(INTENT_PICKED_SONG, sp);
 		    startActivity(intent);
+		    
+		    datasource.close();
 		}
 	};
 
@@ -263,14 +261,12 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 	private void applyNightMode() {
 		background.setBackgroundColor(getResources().getColor(R.color.night_back));
     	title.setTextColor(getResources().getColor(R.color.night_text));
-    	backDescription.setTextColor(getResources().getColor(R.color.night_text));
     	mainSearch.setBackgroundResource(R.color.night_text);
 	}
 	
 	private void applyDayMode() {
 		background.setBackgroundColor(getResources().getColor(R.color.day_back));
     	title.setTextColor(getResources().getColor(R.color.day_text));
-    	backDescription.setTextColor(getResources().getColor(R.color.day_text));
     	mainSearch.setBackgroundResource(R.color.night_text);
 	}
 	
