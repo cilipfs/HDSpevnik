@@ -44,9 +44,9 @@
     <string name="title_activity_settings">Nastavenia</string>
     <string name="settigs_activity_option">Nastavenia</string>
     <string name="setting_keepScreenOn">Nezhasínať obrazovku</string>
-    <string name="setting_keepScreenOn_summ">Nezhasínať obrazovku počas zobrazeného biblického textu</string>
+    <string name="setting_keepScreenOn_summ">Nezhasínať obrazovku počas zobrazenej piesne</string>
     <string name="setting_fontSize">Veľkosť písma</string>
-    <string name="setting_fontSize_summ">Veľkosť písma biblického textu</string>
+    <string name="setting_fontSize_summ">Veľkosť písma piesne</string>
     <string name="title_activity_about">Info</string>
     <string name="about_activity_option">Info</string>
     <string name="about_text1">Mládežnícky spevník</string>
