@@ -39,7 +39,7 @@ public class SearchResultsActivity extends Activity {
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	
-	public static final String INTENT_SCRIPTURE_POSITION = "sk.suchac.hds.SCRIPTURE_POSITION";
+	public static final String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	public final static String INTENT_SEARCH_ORDER = "sk.suchac.hds.SEARCH_ORDER";
 	SearchOrder order = new SearchOrder();
 	
@@ -114,10 +114,9 @@ public class SearchResultsActivity extends Activity {
 		
         @Override
         protected Void doInBackground(Void... params) {
-        	ArrayList<Integer> orderBookIds = order.getBookIds();
      		String searchString = order.getSearchString();
         	
-     		allResults.addAll(datasource.getSearchResults(orderBookIds, searchString));
+     		allResults.addAll(datasource.getSearchResults(searchString));
         	
 			return null;
         }
@@ -169,16 +168,15 @@ public class SearchResultsActivity extends Activity {
         		 
         		 LinearLayout linLayout = new LinearLayout(thisActivity);
         		 linLayout.setOrientation(LinearLayout.VERTICAL);
-        		 linLayout.setPadding(0, 2, 0, 14);
+        		 linLayout.setPadding(0, 2, 0, 20);
         		 
         		 Button btnOpen = new Button(thisActivity);
-//        		 btnOpen.setText(getBookAbbreviation(sResult.getBookId())
-//	     	    			+ " " + (sResult.getChapterId() + 1));
+        		 btnOpen.setText(sResult.getTitle() + " " + sResult.getNumber());
         		 btnOpen.setOnClickListener(new OnClickListener() {
         			 public void onClick(View v) {
         				 Intent intent = new Intent(thisActivity, ScriptureActivity.class);
-        				 PickedSongInfo sp = new PickedSongInfo(sResult.getBookId());
-        				 intent.putExtra(INTENT_SCRIPTURE_POSITION, sp);
+        				 PickedSongInfo sp = new PickedSongInfo(sResult.getSongId());
+        				 intent.putExtra(INTENT_PICKED_SONG, sp);
         				 startActivity(intent);
         			 }
         		 });
@@ -207,11 +205,6 @@ public class SearchResultsActivity extends Activity {
 //        	 Log.i(SearchResultsActivity.class.getName(), "Elapsed time of search: " + TimeUnit.MILLISECONDS.convert(estimatedTime, TimeUnit.NANOSECONDS));
         }
     }
-	
-//	private String getBookAbbreviation(int bookId) {
-//		Book book = datasource.getSong(bookId + 1);
-// 	   	return book.getAbbreviation();
-//	}
 	
 	private boolean isNightMode() {
 		SharedPreferences settings = getSharedPreferences(PREFS, 0);

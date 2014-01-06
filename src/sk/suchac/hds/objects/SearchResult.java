@@ -2,28 +2,28 @@ package sk.suchac.hds.objects;
 
 public class SearchResult {
 
-	int bookId;
-	int chapterId;
-	int verseNumber;
-	String sample;
+	private int songId;
+	private String number;
+	private String title;
+	private String sample;
 	
-	public int getBookId() {
-		return bookId;
+	public int getSongId() {
+		return songId;
 	}
-	public void setBookId(int bookId) {
-		this.bookId = bookId;
+	public void setSongId(int songId) {
+		this.songId = songId;
 	}
-	public int getChapterId() {
-		return chapterId;
+	public String getNumber() {
+		return number;
 	}
-	public void setChapterId(int chapterId) {
-		this.chapterId = chapterId;
+	public void setNumber(String number) {
+		this.number = number;
 	}
-	public int getVerseNumber() {
-		return verseNumber;
+	public String getTitle() {
+		return title;
 	}
-	public void setVerseNumber(int verseNumber) {
-		this.verseNumber = verseNumber;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	public String getSample() {
 		return sample;

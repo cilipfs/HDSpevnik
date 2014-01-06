@@ -10,6 +10,7 @@
         android:id="@+id/search_text_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:inputType="text" >
 
@@ -21,39 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="5dp"
         android:text="@string/button_search" />
-
-    <CheckBox
-        android:id="@+id/search_cb_bible_whole"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="@string/search_cb_bible_whole" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <CheckBox
-            android:id="@+id/search_cb_old_testament"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search_cb_old_testament" />
-
-        <CheckBox
-            android:id="@+id/search_cb_new_testament"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/search_cb_new_testament" />
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:choiceMode="multipleChoice" >
-    </ListView>
 
 </LinearLayout>

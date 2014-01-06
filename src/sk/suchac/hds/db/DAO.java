@@ -1,6 +1,5 @@
 package sk.suchac.hds.db;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DAO {
 	// Database fields
@@ -96,25 +96,16 @@ public class DAO {
 		  return song;
 	  }
 	  
-	  public List<SearchResult> getSearchResults(List<Integer> bookIds, String searchString) {
+	  public List<SearchResult> getSearchResults(String searchString) {
 		  List<SearchResult> results = new ArrayList<SearchResult>();
 		  
 		  StringBuilder query = new StringBuilder();
-		  query.append("SELECT book._id, chapter.NUMBER, verse.NUMBER, verse.TEXT FROM (SELECT * FROM BOOK WHERE ");
-		  for (int i = 0; i < bookIds.size(); i++) {
-			  Integer bookId = bookIds.get(i);
-			  if (i == 0) {
-				  query.append("_id='" + (bookId + 1) + "'");
-			  } else {
-				  query.append(" OR _id='" + (bookId + 1) + "'");
-			  }
-		  }
-		  query.append(") as book JOIN CHAPTER as chapter ON book._id=chapter.BOOK_ID JOIN VERSE as verse ON chapter._id=verse.CHAPTER_ID WHERE TEXT LIKE ?");
+		  query.append("SELECT * FROM SONG WHERE TEXT LIKE ?");
 		  
 		  Cursor cursor = database.rawQuery(query.toString(), new String[] {"%" + searchString + "%"});
 	      cursor.moveToFirst();
 	      while (!cursor.isAfterLast()) {
-			  SearchResult result = cursorToSearcHResult(cursor);
+			  SearchResult result = cursorToSearcHResult(cursor, searchString);
 		      results.add(result);
 		      cursor.moveToNext();
 		  }
@@ -132,13 +123,39 @@ public class DAO {
 		  return song;
 	  }
 	  
-	  private SearchResult cursorToSearcHResult(Cursor cursor) {
+	  private SearchResult cursorToSearcHResult(Cursor cursor, String searchString) {
 		  SearchResult sr = new SearchResult();
-		  sr.setBookId(cursor.getInt(0) - 1);
-		  sr.setChapterId(cursor.getInt(1) - 1);
-		  sr.setVerseNumber(cursor.getInt(2));
-		  sr.setSample("<b>" + cursor.getString(2) + "</b>" + " " + cursor.getString(3));	// TODO spravit nejaky formater tychto veci
+		  sr.setSongId(cursor.getInt(0));
+		  sr.setNumber(cursor.getString(1));
+		  sr.setTitle(cursor.getString(2));
+		  sr.setSample(makeSample(cursor.getString(3), searchString));
 		  return sr;
 	  }
+
+	  private String makeSample(String string, String searchString) {
+		  String stringLC = string.toLowerCase(Locale.GERMAN);
+		  String searchStringLC = searchString.toLowerCase(Locale.GERMAN);
+		  String sample = "";
+		  String br = "<br />";
+		  int searchStringPosition = stringLC.indexOf(searchStringLC);
+
+		  String part = stringLC.substring(searchStringPosition);
+		  int secondBrPosition = part.indexOf(br);
+		  
+		  if (secondBrPosition == -1) {
+			  int firstBrPosition = stringLC.lastIndexOf(br);
+			  sample = string.substring(firstBrPosition + br.length());
+		  } else {
+			  sample = string.substring(0, secondBrPosition + searchStringPosition);
+			  int firstBrPosition = sample.lastIndexOf(br);
+			  
+			  if (firstBrPosition != -1) {
+				  sample = sample.substring(firstBrPosition + br.length());
+			  }
+		  }
+		  
+		  return sample;
+	  }
+	  
 }
 
