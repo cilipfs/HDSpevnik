@@ -157,7 +157,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             builder.setItems(songTitleArray, new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int which) {
         			datasource.open();
-        			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+        			Intent intent = new Intent(thisActivity, SlideActivity.class);	// TODO podmienku
 				    PickedSongInfo sp = new PickedSongInfo(which + 1);
 					intent.putExtra(INTENT_PICKED_SONG, sp);
 				    startActivity(intent);

@@ -50,6 +50,10 @@
             android:name="sk.suchac.hds.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
+        <activity
+            android:name="sk.suchac.hds.SlideActivity"
+            android:label="@string/title_activity_slide" >
+        </activity>
     </application>
 
 </manifest>

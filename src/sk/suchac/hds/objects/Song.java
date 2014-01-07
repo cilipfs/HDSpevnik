@@ -14,7 +14,14 @@ public class Song implements Comparable<Song> {
 	private String number;
 	private String title;
 	private String text;
+	private String slideFlow;
 	
+	public String getSlideFlow() {
+		return slideFlow;
+	}
+	public void setSlideFlow(String slideFlow) {
+		this.slideFlow = slideFlow;
+	}
 	public int get_id() {
 		return _id;
 	}

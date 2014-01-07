@@ -22,10 +22,8 @@
     <string name="yes">Áno</string>
     <string name="no">Nie</string>
     <string name="ok">OK</string>
-    
     <string name="title_activity_history">História</string>
     <string name="history_activity_option">História</string>
-    
     <string name="title_activity_search">Vyhľadávanie</string>
     <string name="search_activity_option">Vyhľadávanie</string>
     <string name="button_search">Vyhľadať</string>
@@ -38,9 +36,7 @@
     <string name="search_results_nothing_found">Neboli nájdené žiadne výsledky pre:</string>
     <string name="search_results_too_many1">Príliš veľa výsledkov:</string>
     <string name="search_results_too_many2">Zobrazených:</string>
-    
     <string name="mainSearch_title">Vyhľadať v názvoch a číslach</string>
-    
     <string name="title_activity_settings">Nastavenia</string>
     <string name="settigs_activity_option">Nastavenia</string>
     <string name="setting_keepScreenOn">Nezhasínať obrazovku</string>
@@ -50,5 +46,10 @@
     <string name="title_activity_about">Info</string>
     <string name="about_activity_option">Info</string>
     <string name="about_text1">Mládežnícky spevník</string>
+    
+    <string name="title_activity_slide">SlideActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="slide_left_icon_text"><![CDATA[<<]]></string>
+    <string name="slide_right_icon_text"><![CDATA[>>]]></string>
 
 </resources>
