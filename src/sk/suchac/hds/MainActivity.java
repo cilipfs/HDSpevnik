@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
 	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
+	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
 	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	PickedSongInfo picked = new PickedSongInfo();
@@ -157,7 +158,12 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             builder.setItems(songTitleArray, new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int which) {
         			datasource.open();
-        			Intent intent = new Intent(thisActivity, SlideActivity.class);	// TODO podmienku
+        			Intent intent = null;
+        			if (isPresentationMode()) {
+        				intent = new Intent(thisActivity, SlideActivity.class);
+        			} else {
+        				intent = new Intent(thisActivity, ScriptureActivity.class);
+        			}
 				    PickedSongInfo sp = new PickedSongInfo(which + 1);
 					intent.putExtra(INTENT_PICKED_SONG, sp);
 				    startActivity(intent);
@@ -173,7 +179,12 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
             registerBuilder.setItems(songsAlphabeticalArray, new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int which) {
         			datasource.open();
-        			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+        			Intent intent = null;
+        			if (isPresentationMode()) {
+        				intent = new Intent(thisActivity, SlideActivity.class);
+        			} else {
+        				intent = new Intent(thisActivity, ScriptureActivity.class);
+        			}
 				    PickedSongInfo sp = new PickedSongInfo(songsAlphabetical.get(which).get_id());
 					intent.putExtra(INTENT_PICKED_SONG, sp);
 				    startActivity(intent);
@@ -202,8 +213,12 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 			
 			datasource.open();
 			Song song = datasource.getSongByNumber(Integer.valueOf(item));
-			
-			Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+			Intent intent = null;
+			if (isPresentationMode()) {
+				intent = new Intent(thisActivity, SlideActivity.class);
+			} else {
+				intent = new Intent(thisActivity, ScriptureActivity.class);
+			}
 		    PickedSongInfo sp = new PickedSongInfo(song.get_id());
 			intent.putExtra(INTENT_PICKED_SONG, sp);
 		    startActivity(intent);
@@ -250,6 +265,11 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 		Intent intent = new Intent(this, ScriptureActivity.class);
 	    intent.putExtra(INTENT_PICKED_SONG, picked);
 	    startActivity(intent);
+	}
+	
+	private boolean isPresentationMode() {
+		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+        return settings.getBoolean("presentationMode", false);
 	}
 	
 	private boolean isNightMode() {

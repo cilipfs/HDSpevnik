@@ -38,6 +38,7 @@ public class SearchResultsActivity extends Activity {
 	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
+	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
 	public static final String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	public final static String INTENT_SEARCH_ORDER = "sk.suchac.hds.SEARCH_ORDER";
@@ -174,7 +175,12 @@ public class SearchResultsActivity extends Activity {
         		 btnOpen.setText(sResult.getTitle() + " " + sResult.getNumber());
         		 btnOpen.setOnClickListener(new OnClickListener() {
         			 public void onClick(View v) {
-        				 Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+        				 Intent intent = null;
+        					if (isPresentationMode()) {
+        						intent = new Intent(thisActivity, SlideActivity.class);
+        					} else {
+        						intent = new Intent(thisActivity, ScriptureActivity.class);
+        					}
         				 PickedSongInfo sp = new PickedSongInfo(sResult.getSongId());
         				 intent.putExtra(INTENT_PICKED_SONG, sp);
         				 startActivity(intent);
@@ -210,6 +216,11 @@ public class SearchResultsActivity extends Activity {
 		SharedPreferences settings = getSharedPreferences(PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
+	}
+	
+	private boolean isPresentationMode() {
+		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+        return settings.getBoolean("presentationMode", false);
 	}
 	
 	private void applyNightMode() {

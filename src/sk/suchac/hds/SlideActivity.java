@@ -36,6 +36,8 @@ public class SlideActivity extends Activity {
 	private List<String> slidesInOrder = new ArrayList<String>();
 	private int slidesPointer = 0;
 	
+	public final static String INTENT_FOR_SETTINGS = "sk.suchac.hds.FOR_SETTINGS";
+	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
@@ -149,6 +151,7 @@ public class SlideActivity extends Activity {
 	            return true;
 			case R.id.show_settings:
 	    		Intent intent3 = new Intent(this, SettingsActivity.class);
+	    		intent3.putExtra(SettingsActivity.INTENT_FOR_SETTINGS, true);
 			    startActivity(intent3);
 	            return true;
 			case R.id.show_about:

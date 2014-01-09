@@ -93,6 +93,7 @@ public class ScriptureActivity extends Activity {
 	            return true;
 			case R.id.show_settings:
 	    		Intent intent3 = new Intent(this, SettingsActivity.class);
+	    		intent3.putExtra(SettingsActivity.INTENT_FOR_SETTINGS, true);
 			    startActivity(intent3);
 	            return true;
 			case R.id.show_about:

@@ -23,12 +23,17 @@ public class SettingsActivity extends Activity {
 	private TextView tvFontSize;
 	private Button btnFontSize;
 	private TextView summFontSize;
+	private View layoutPresentationMode;
+	private CheckBox cbPresentationMode;
+	private TextView textPresentationMode;
 	
 	private Resources resources;
 	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
+	
+	public final static String INTENT_FOR_SETTINGS = "sk.suchac.hds.FOR_SETTINGS";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,9 @@ public class SettingsActivity extends Activity {
         
         btnFontSize.setText(String.valueOf(settings.getInt("fontSize", 18)));
         btnFontSize.setOnClickListener(btnFontSizeListener);
+        
+        cbPresentationMode.setChecked(settings.getBoolean("presentationMode", false));
+        cbPresentationMode.setOnClickListener(presentationModeOnClickListener);
 	}
 
 	@Override
@@ -93,6 +101,15 @@ public class SettingsActivity extends Activity {
 		tvFontSize = (TextView) findViewById(R.id.setting_tv_fontSize);
 		btnFontSize = (Button) findViewById(R.id.setting_buttonFontSize);
 		summFontSize = (TextView) findViewById(R.id.setting_summ_fontSize);
+		layoutPresentationMode = (View) findViewById(R.id.lay_presentationMode);
+		cbPresentationMode = (CheckBox) findViewById(R.id.setting_cb_presentationMode);
+		textPresentationMode = (TextView) findViewById(R.id.setting_tv_presentationMode);
+		
+		Intent intent = getIntent();
+		Boolean dontAllowManagePresentationMode = intent.getBooleanExtra(INTENT_FOR_SETTINGS, false);
+		if (dontAllowManagePresentationMode) {
+			layoutPresentationMode.setVisibility(View.GONE);
+		}
 	}
 	
 	private OnClickListener keepScreenOnOnClickListener = new OnClickListener() {
@@ -105,6 +122,21 @@ public class SettingsActivity extends Activity {
 			    editor.commit();
 			} else {
 				editor.putBoolean("keepScreenOn", false);
+			    editor.commit();
+			}
+		}
+	};
+	
+	private OnClickListener presentationModeOnClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		    SharedPreferences.Editor editor = settings.edit();
+			if (cbPresentationMode.isChecked()) {
+			    editor.putBoolean("presentationMode", true);
+			    editor.commit();
+			} else {
+				editor.putBoolean("presentationMode", false);
 			    editor.commit();
 			}
 		}
@@ -143,6 +175,8 @@ public class SettingsActivity extends Activity {
 		summKeepScreenOn.setTextColor(resources.getColor(R.color.night_text));
 		tvFontSize.setTextColor(resources.getColor(R.color.night_text));
 		summFontSize.setTextColor(resources.getColor(R.color.night_text));
+		cbPresentationMode.setTextColor(resources.getColor(R.color.night_text));
+		textPresentationMode.setTextColor(resources.getColor(R.color.night_text));
 	}
 	
 	private void applyDayMode() {
@@ -151,6 +185,8 @@ public class SettingsActivity extends Activity {
 		summKeepScreenOn.setTextColor(resources.getColor(R.color.day_text));
 		tvFontSize.setTextColor(resources.getColor(R.color.day_text));
 		summFontSize.setTextColor(resources.getColor(R.color.day_text));
+		cbPresentationMode.setTextColor(resources.getColor(R.color.day_text));
+		textPresentationMode.setTextColor(resources.getColor(R.color.day_text));
 	}
 	
 	private void saveNightModeState(boolean night) {

@@ -34,6 +34,7 @@ public class HistoryActivity extends Activity {
 	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
+	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
 	private static Resources resources;
 
@@ -112,7 +113,12 @@ public class HistoryActivity extends Activity {
 	    	recordOpen.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					datasource.open();
-					Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+					Intent intent = null;
+        			if (isPresentationMode()) {
+        				intent = new Intent(thisActivity, SlideActivity.class);
+        			} else {
+        				intent = new Intent(thisActivity, ScriptureActivity.class);
+        			}
 					Song song = datasource.getSongByNumber(record.getSongNumber());
 				    PickedSongInfo sp = new PickedSongInfo(song.get_id());
 					intent.putExtra(INTENT_PICKED_SONG, sp);
@@ -150,6 +156,11 @@ public class HistoryActivity extends Activity {
 		SharedPreferences settings = getSharedPreferences(PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
+	}
+	
+	private boolean isPresentationMode() {
+		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+        return settings.getBoolean("presentationMode", false);
 	}
 	
 	private void applyNightMode() {
