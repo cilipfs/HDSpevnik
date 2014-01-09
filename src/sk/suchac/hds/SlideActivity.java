@@ -1,5 +1,9 @@
 package sk.suchac.hds;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import sk.suchac.hds.db.DAO;
 import sk.suchac.hds.helpers.HistoryHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
@@ -11,7 +15,9 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -19,9 +25,16 @@ public class SlideActivity extends Activity {
 	
 	private SlideActivity thisActivity = this;
 	private TextView textField;
+	private TextView goToNextSlide;
+	private TextView goToPreviousSlide;
 	private View background;
 	
 	private DAO datasource;
+	
+	private static final String SLIDE_BRAKE_TAG = "<sldbrk />";
+	private static final String SLIDE_BRAKE_ALTERNATIVE = "<br /><br />";
+	private List<String> slidesInOrder = new ArrayList<String>();
+	private int slidesPointer = 0;
 	
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
@@ -41,6 +54,11 @@ public class SlideActivity extends Activity {
 		background = findViewById(R.id.slide_layout);
 		textField = (TextView) findViewById(R.id.textView_slide);
 		textField.setText("");
+		goToNextSlide = (TextView) findViewById(R.id.slide_right_icon);
+		goToPreviousSlide = (TextView) findViewById(R.id.slide_left_icon);
+		
+		goToNextSlide.setOnTouchListener(goToNextSlideTouchListener);
+		goToPreviousSlide.setOnTouchListener(goToPreviousSlideTouchListener);
 		
 		Intent intent = getIntent();
 		pickedSong = (PickedSongInfo) intent.getSerializableExtra(MainActivity.INTENT_PICKED_SONG);
@@ -49,6 +67,44 @@ public class SlideActivity extends Activity {
 		HistoryHelper.saveRecord(thisActivity, pickedSong.getSong());
         
 		datasource.close();
+	}
+	
+	private OnTouchListener goToNextSlideTouchListener = new OnTouchListener() {
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			if (slidesPointer + 1 != slidesInOrder.size()) {
+				slidesPointer++;
+				textField.setText(Html.fromHtml(slidesInOrder.get(slidesPointer)));
+				setGoToSlideElementsVisibility();
+			}
+			return false;
+		}
+	};
+	
+	private OnTouchListener goToPreviousSlideTouchListener = new OnTouchListener() {
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			if (slidesPointer != 0) {
+				slidesPointer--;
+				textField.setText(Html.fromHtml(slidesInOrder.get(slidesPointer)));
+				setGoToSlideElementsVisibility();
+			}
+			return false;
+		}
+	};
+	
+	private void setGoToSlideElementsVisibility() {
+		if (slidesPointer == 0) {
+			goToPreviousSlide.setVisibility(View.INVISIBLE);
+		} else {
+			goToPreviousSlide.setVisibility(View.VISIBLE);
+		}
+		
+		if (slidesPointer + 1 == slidesInOrder.size()) {
+			goToNextSlide.setVisibility(View.INVISIBLE);
+		} else {
+			goToNextSlide.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override
@@ -115,12 +171,45 @@ public class SlideActivity extends Activity {
 
 	private void displayScriptureText() {
 		Song song = datasource.getSongById(pickedSong.getSong());
-		// TODO podmienka na abesenciu <sldbrk />
-		String[] slides = song.getText().split("<sldbrk />");
-		textField.append(Html.fromHtml(slides[0]));	// TODO slide style
+		String songText = song.getText();
+		String[] slides = null;
+		String slidesOrder = song.getSlideFlow();
+		
+		if (songText.indexOf(SLIDE_BRAKE_TAG) != -1) {
+			slides = songText.split(SLIDE_BRAKE_TAG);
+			trimSlides(slides);
+		} else {
+			slides = songText.split(SLIDE_BRAKE_ALTERNATIVE);
+		}
+		
+		if (slidesOrder != null) {
+			//Log.i(SlideActivity.class.getName(), "slidesOrder: " + slidesOrder);
+			for (int i = 0; i < slidesOrder.length(); i++) {
+				int orderNumber = Character.getNumericValue(slidesOrder.charAt(i));
+				slidesInOrder.add(slides[orderNumber - 1]);
+			}
+		} else {
+			//Log.i(SlideActivity.class.getName(), "slidesOrder: null");
+			slidesInOrder = Arrays.asList(slides);
+		}
+		
+		textField.setText(Html.fromHtml(slidesInOrder.get(slidesPointer)));
+		setGoToSlideElementsVisibility();
+		
 		this.setTitle(song.getNumber() + " " + song.getTitle());
 	}
 	
+	private void trimSlides(String[] slides) {
+		for (int i = 0; i < slides.length; i++) {
+			if (slides[i].indexOf(SLIDE_BRAKE_ALTERNATIVE) == 0) {
+				slides[i] = slides[i].substring(0 + SLIDE_BRAKE_ALTERNATIVE.length());
+			}
+			if (slides[i].lastIndexOf(SLIDE_BRAKE_ALTERNATIVE) == slides[i].length() - SLIDE_BRAKE_ALTERNATIVE.length()) {
+				slides[i] = slides[i].substring(0, slides[i].length() - SLIDE_BRAKE_ALTERNATIVE.length());
+			}
+		}
+	}
+
 	// onClick for buttonAbout, buttonSeb
 	public void displayAbout(View view) {
 		Intent intent = new Intent(this, AboutActivity.class);
@@ -141,11 +230,15 @@ public class SlideActivity extends Activity {
 	private void applyNightMode() {
 		background.setBackgroundColor(getResources().getColor(R.color.night_back));
     	textField.setTextColor(getResources().getColor(R.color.night_text));
+    	goToNextSlide.setTextColor(getResources().getColor(R.color.night_text));
+    	goToPreviousSlide.setTextColor(getResources().getColor(R.color.night_text));
 	}
 	
 	private void applyDayMode() {
 		background.setBackgroundColor(getResources().getColor(R.color.day_back));
     	textField.setTextColor(getResources().getColor(R.color.day_text));
+    	goToNextSlide.setTextColor(getResources().getColor(R.color.day_text));
+    	goToPreviousSlide.setTextColor(getResources().getColor(R.color.day_text));
 	}
 	
 	private void saveNightModeState(boolean night) {
