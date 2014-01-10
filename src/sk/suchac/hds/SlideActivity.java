@@ -136,7 +136,7 @@ public class SlideActivity extends Activity {
 
 	private void applyFontSize() {
 		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
-		textField.setTextSize(settings.getInt("fontSize", 18));
+		textField.setTextSize(settings.getInt("presentationFontSize", 20));
 	}
 
 	@Override

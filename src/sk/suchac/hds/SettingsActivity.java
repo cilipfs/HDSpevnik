@@ -26,6 +26,9 @@ public class SettingsActivity extends Activity {
 	private View layoutPresentationMode;
 	private CheckBox cbPresentationMode;
 	private TextView textPresentationMode;
+	private TextView tvPresentationFontSize;
+	private Button btnPresentationFontSize;
+	private TextView summPresentationFontSize;
 	
 	private Resources resources;
 	
@@ -51,6 +54,9 @@ public class SettingsActivity extends Activity {
         
         cbPresentationMode.setChecked(settings.getBoolean("presentationMode", false));
         cbPresentationMode.setOnClickListener(presentationModeOnClickListener);
+        
+        btnPresentationFontSize.setText(String.valueOf(settings.getInt("presentationFontSize", 20)));
+        btnPresentationFontSize.setOnClickListener(btnPresentationFontSizeListener);
 	}
 
 	@Override
@@ -104,6 +110,9 @@ public class SettingsActivity extends Activity {
 		layoutPresentationMode = (View) findViewById(R.id.lay_presentationMode);
 		cbPresentationMode = (CheckBox) findViewById(R.id.setting_cb_presentationMode);
 		textPresentationMode = (TextView) findViewById(R.id.setting_tv_presentationMode);
+		tvPresentationFontSize = (TextView) findViewById(R.id.setting_tv_presentation_fontSize);
+		btnPresentationFontSize = (Button) findViewById(R.id.setting_presentation_buttonFontSize);
+		summPresentationFontSize = (TextView) findViewById(R.id.setting_summ_presentation_fontSize);
 		
 		Intent intent = getIntent();
 		Boolean dontAllowManagePresentationMode = intent.getBooleanExtra(INTENT_FOR_SETTINGS, false);
@@ -148,6 +157,12 @@ public class SettingsActivity extends Activity {
 	    }
 	};
 	
+	private OnClickListener btnPresentationFontSizeListener = new OnClickListener() {
+	    public void onClick(View v) {
+	      createDialogPresentationFontSize().show();
+	    }
+	};
+	
 	private AlertDialog createDialogFontSize() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setItems(R.array.font_size_texts, new DialogInterface.OnClickListener() {
@@ -157,6 +172,21 @@ public class SettingsActivity extends Activity {
         		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
     		    SharedPreferences.Editor editor = settings.edit();
     		    editor.putInt("fontSize", picked);
+			    editor.commit();
+        	}
+        });
+		return builder.create();
+	}
+	
+	private AlertDialog createDialogPresentationFontSize() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setItems(R.array.presentation_font_size_texts, new DialogInterface.OnClickListener() {
+        	public void onClick(DialogInterface dialog, int which) {
+        		int picked = resources.getIntArray(R.array.presentation_font_size)[which];
+        		btnPresentationFontSize.setText(String.valueOf(picked));
+        		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+    		    SharedPreferences.Editor editor = settings.edit();
+    		    editor.putInt("presentationFontSize", picked);
 			    editor.commit();
         	}
         });
@@ -177,6 +207,8 @@ public class SettingsActivity extends Activity {
 		summFontSize.setTextColor(resources.getColor(R.color.night_text));
 		cbPresentationMode.setTextColor(resources.getColor(R.color.night_text));
 		textPresentationMode.setTextColor(resources.getColor(R.color.night_text));
+		tvPresentationFontSize.setTextColor(resources.getColor(R.color.night_text));
+		summPresentationFontSize.setTextColor(resources.getColor(R.color.night_text));
 	}
 	
 	private void applyDayMode() {
@@ -187,6 +219,8 @@ public class SettingsActivity extends Activity {
 		summFontSize.setTextColor(resources.getColor(R.color.day_text));
 		cbPresentationMode.setTextColor(resources.getColor(R.color.day_text));
 		textPresentationMode.setTextColor(resources.getColor(R.color.day_text));
+		tvPresentationFontSize.setTextColor(resources.getColor(R.color.day_text));
+		summPresentationFontSize.setTextColor(resources.getColor(R.color.day_text));
 	}
 	
 	private void saveNightModeState(boolean night) {

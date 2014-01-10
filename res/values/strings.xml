@@ -48,6 +48,8 @@
     <string name="setting_fontSize_summ">Veľkosť písma piesne</string>
     <string name="setting_presentationMode">Mód prezentácie</string>
     <string name="setting_presentationMode_text">Text piesne sa bude zobrazovať v móde prezentácie</string>
+    <string name="setting_presentation_fontSize">Veľkosť písma prezentácie</string>
+    <string name="setting_presentation_fontSize_summ">Veľkosť písma piesne v móde prezentácie</string>
     
     <string name="title_activity_about">Info</string>
     <string name="about_activity_option">Info</string>
