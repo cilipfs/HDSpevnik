@@ -31,6 +31,7 @@ public class SlideActivity extends Activity {
 	
 	private DAO datasource;
 	
+	// SLIDEFLOW napr. pre 4 odstavce: 12341
 	private static final String SLIDE_BRAKE_TAG = "<sldbrk />";
 	private static final String SLIDE_BRAKE_ALTERNATIVE = "<br /><br />";
 	private List<String> slidesInOrder = new ArrayList<String>();
