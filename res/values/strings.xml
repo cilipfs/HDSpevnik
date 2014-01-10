@@ -18,6 +18,8 @@
     <color name="night_text">#C0C0C0</color>
     <color name="day_back">#FFFFFF</color>
     <color name="day_text">#000000</color>
+    <color name="presentation_back">#000000</color>
+    <color name="presentation_text">#FFFFFF</color>
 
     <string name="yes">Áno</string>
     <string name="no">Nie</string>

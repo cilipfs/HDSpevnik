@@ -231,8 +231,8 @@ public class SlideActivity extends Activity {
 	}
 	
 	private void applyNightMode() {
-		background.setBackgroundColor(getResources().getColor(R.color.night_back));
-    	textField.setTextColor(getResources().getColor(R.color.night_text));
+		background.setBackgroundColor(getResources().getColor(R.color.presentation_back));
+    	textField.setTextColor(getResources().getColor(R.color.presentation_text));
     	goToNextSlide.setTextColor(getResources().getColor(R.color.night_text));
     	goToPreviousSlide.setTextColor(getResources().getColor(R.color.night_text));
 	}
