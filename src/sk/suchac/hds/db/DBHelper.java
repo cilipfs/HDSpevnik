@@ -10,7 +10,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -37,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		try {
 			createDataBase();
 		} catch (IOException e) {
-			Log.w(DBHelper.class.getSimpleName(), "Create DB failed.");
+//			Log.w(DBHelper.class.getSimpleName(), "Create DB failed.");
 		}
 	}
 
@@ -49,10 +48,10 @@ public class DBHelper extends SQLiteOpenHelper {
 //		Log.i(DbHelper.class.getName(), "createDataBase()");
 
 		int dbVersion = checkDataBase();
-		Log.i(DBHelper.class.getSimpleName(), "old: " + dbVersion + " actual: " + DB_VERSION);
+//		Log.i(DBHelper.class.getSimpleName(), "old: " + dbVersion + " actual: " + DB_VERSION);
 		
 		if (dbVersion == DB_VERSION) {
-			Log.i(DBHelper.class.getSimpleName(), "DB exists");
+//			Log.i(DBHelper.class.getSimpleName(), "DB exists");
 		} else {
 			if (dbVersion == -1) {
 				// By calling this method and empty database will be created into
@@ -68,7 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				close();
 
 			} catch (IOException e) {
-				Log.e(DBHelper.class.getSimpleName(), "Error copying database");
+//				Log.e(DBHelper.class.getSimpleName(), "Error copying database");
 				throw new Error("Error copying database");
 			}
 		}
