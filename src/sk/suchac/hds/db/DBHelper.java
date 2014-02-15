@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static String DB_NAME = "hdsdb";
-	private static final int DB_VERSION = 8;
+	private static final int DB_VERSION = 9;
 
 	private SQLiteDatabase myDataBase;
 
