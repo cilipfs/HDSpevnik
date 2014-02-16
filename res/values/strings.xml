@@ -53,7 +53,7 @@
     
     <string name="title_activity_about">Info</string>
     <string name="about_activity_option">Info</string>
-    <string name="about_text1">Mládežnícky spevník</string>
+    <string name="about_text1">Mládežnícky spevník\n\nV hornej časti úvodnej obrazovky sa nachádza pole pre vyhľadávanie podľa čísla piesne alebo podľa časti slova z názvu piesne. Pre toto vyhľadávanie je potrebné zadať minimálne 2 znaky a bez medzery. Nezáleží na veľkosti znakov, ale záleží na diakritike.\n\nFunkcia Vyhľadávanie, ktorá je spustiteľná z menu aplikácie, slúži na vyhľadávanie priamo v textoch piesní. Tu je možné vyhľadávať podľa časti slova, celého slova alebo viacerých slov. Je potrebné zadať 2 až 40 znakov. Nezáleží na veľkosti znakov, ale záleží na diakritike.\n\nMód prezentácie nie je možné zapínať/vypínať počas zobrazenej piesne.</string>
     
     <string name="title_activity_slide">SlideActivity</string>
     <string name="action_settings">Settings</string>
