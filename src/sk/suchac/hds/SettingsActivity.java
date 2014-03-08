@@ -1,5 +1,6 @@
 package sk.suchac.hds;
 
+import sk.suchac.hds.helpers.IntentHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,12 +21,13 @@ public class SettingsActivity extends Activity {
 	private View background;
 	private CheckBox cbKeepScreenOn;
 	private TextView summKeepScreenOn;
+	
+	private View layoutFontSize;
 	private TextView tvFontSize;
 	private Button btnFontSize;
 	private TextView summFontSize;
-	private View layoutPresentationMode;
-	private CheckBox cbPresentationMode;
-	private TextView textPresentationMode;
+	
+	private View layoutPresentationFontSize;
 	private TextView tvPresentationFontSize;
 	private Button btnPresentationFontSize;
 	private TextView summPresentationFontSize;
@@ -35,8 +37,6 @@ public class SettingsActivity extends Activity {
 	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
-	
-	public final static String INTENT_FOR_SETTINGS = "sk.suchac.hds.FOR_SETTINGS";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +51,6 @@ public class SettingsActivity extends Activity {
         
         btnFontSize.setText(String.valueOf(settings.getInt("fontSize", 18)));
         btnFontSize.setOnClickListener(btnFontSizeListener);
-        
-        cbPresentationMode.setChecked(settings.getBoolean("presentationMode", false));
-        cbPresentationMode.setOnClickListener(presentationModeOnClickListener);
         
         btnPresentationFontSize.setText(String.valueOf(settings.getInt("presentationFontSize", 20)));
         btnPresentationFontSize.setOnClickListener(btnPresentationFontSizeListener);
@@ -104,20 +101,23 @@ public class SettingsActivity extends Activity {
 		background = (View) findViewById(R.id.settings_layout);
 		cbKeepScreenOn = (CheckBox) findViewById(R.id.setting_cb_keepScreenOn);
 		summKeepScreenOn = (TextView) findViewById(R.id.setting_summ_keepScreenOn);
+		layoutFontSize = (View) findViewById(R.id.lay_fontSize);
 		tvFontSize = (TextView) findViewById(R.id.setting_tv_fontSize);
 		btnFontSize = (Button) findViewById(R.id.setting_buttonFontSize);
 		summFontSize = (TextView) findViewById(R.id.setting_summ_fontSize);
-		layoutPresentationMode = (View) findViewById(R.id.lay_presentationMode);
-		cbPresentationMode = (CheckBox) findViewById(R.id.setting_cb_presentationMode);
-		textPresentationMode = (TextView) findViewById(R.id.setting_tv_presentationMode);
+		layoutPresentationFontSize = (View) findViewById(R.id.lay_presentation_fontSize);
 		tvPresentationFontSize = (TextView) findViewById(R.id.setting_tv_presentation_fontSize);
 		btnPresentationFontSize = (Button) findViewById(R.id.setting_presentation_buttonFontSize);
 		summPresentationFontSize = (TextView) findViewById(R.id.setting_summ_presentation_fontSize);
 		
 		Intent intent = getIntent();
-		Boolean dontAllowManagePresentationMode = intent.getBooleanExtra(INTENT_FOR_SETTINGS, false);
-		if (dontAllowManagePresentationMode) {
-			layoutPresentationMode.setVisibility(View.GONE);
+		String fromActivity = intent.getStringExtra(IntentHelper.INTENT_FOR_SETTINGS);
+		if (fromActivity != null) {
+			if (fromActivity.equals(ScriptureActivity.class.getSimpleName())) {
+				layoutPresentationFontSize.setVisibility(View.GONE);
+			} else if (fromActivity.equals(SlideActivity.class.getSimpleName())) {
+				layoutFontSize.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -131,21 +131,6 @@ public class SettingsActivity extends Activity {
 			    editor.commit();
 			} else {
 				editor.putBoolean("keepScreenOn", false);
-			    editor.commit();
-			}
-		}
-	};
-	
-	private OnClickListener presentationModeOnClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View arg0) {
-			SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
-		    SharedPreferences.Editor editor = settings.edit();
-			if (cbPresentationMode.isChecked()) {
-			    editor.putBoolean("presentationMode", true);
-			    editor.commit();
-			} else {
-				editor.putBoolean("presentationMode", false);
 			    editor.commit();
 			}
 		}
@@ -205,8 +190,6 @@ public class SettingsActivity extends Activity {
 		summKeepScreenOn.setTextColor(resources.getColor(R.color.night_text));
 		tvFontSize.setTextColor(resources.getColor(R.color.night_text));
 		summFontSize.setTextColor(resources.getColor(R.color.night_text));
-		cbPresentationMode.setTextColor(resources.getColor(R.color.night_text));
-		textPresentationMode.setTextColor(resources.getColor(R.color.night_text));
 		tvPresentationFontSize.setTextColor(resources.getColor(R.color.night_text));
 		summPresentationFontSize.setTextColor(resources.getColor(R.color.night_text));
 	}
@@ -217,8 +200,6 @@ public class SettingsActivity extends Activity {
 		summKeepScreenOn.setTextColor(resources.getColor(R.color.day_text));
 		tvFontSize.setTextColor(resources.getColor(R.color.day_text));
 		summFontSize.setTextColor(resources.getColor(R.color.day_text));
-		cbPresentationMode.setTextColor(resources.getColor(R.color.day_text));
-		textPresentationMode.setTextColor(resources.getColor(R.color.day_text));
 		tvPresentationFontSize.setTextColor(resources.getColor(R.color.day_text));
 		summPresentationFontSize.setTextColor(resources.getColor(R.color.day_text));
 	}

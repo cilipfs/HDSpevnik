@@ -2,6 +2,10 @@ package sk.suchac.hds.helpers;
 
 public class HtmlHelper {
 	
+	public static final String LINE_BRAKE = "<br />";
+	public static final String SLIDE_BRAKE_TAG = "<sldbrk />";
+	public static final String SLIDE_BRAKE_ALTERNATIVE = "<br /><br />";
+	
 	public static String bold(String text) {
 		return "<b>" + text + "</b>";
 	}

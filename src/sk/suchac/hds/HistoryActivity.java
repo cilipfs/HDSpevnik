@@ -4,6 +4,8 @@ import java.util.List;
 
 import sk.suchac.hds.db.DAO;
 import sk.suchac.hds.helpers.HistoryHelper;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.HistoryRecord;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.Song;
@@ -31,10 +33,7 @@ public class HistoryActivity extends Activity {
 	
 	private DAO datasource;
 	
-	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
-	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
 	private static Resources resources;
 
@@ -121,7 +120,7 @@ public class HistoryActivity extends Activity {
         			}
 					Song song = datasource.getSongByNumber(record.getSongNumber());
 				    PickedSongInfo sp = new PickedSongInfo(song.get_id());
-					intent.putExtra(INTENT_PICKED_SONG, sp);
+					intent.putExtra(IntentHelper.INTENT_PICKED_SONG, sp);
 				    startActivity(intent);
 				    datasource.close();
 				}
@@ -153,13 +152,13 @@ public class HistoryActivity extends Activity {
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
 	
 	private boolean isPresentationMode() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("presentationMode", false);
 	}
 	
@@ -190,7 +189,7 @@ public class HistoryActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

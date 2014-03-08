@@ -1,12 +1,16 @@
 package sk.suchac.hds;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.ExportHelper;
 import sk.suchac.hds.helpers.HistoryHelper;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.Song;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScriptureActivity extends Activity {
 	
@@ -22,12 +27,10 @@ public class ScriptureActivity extends Activity {
 	private View background;
 	
 	private DAO datasource;
+	private Song song;
 	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
-	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
-	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	PickedSongInfo pickedSong = new PickedSongInfo();
 	
 	@Override
@@ -43,7 +46,7 @@ public class ScriptureActivity extends Activity {
 		textField.setText("");
 		
 		Intent intent = getIntent();
-		pickedSong = (PickedSongInfo) intent.getSerializableExtra(MainActivity.INTENT_PICKED_SONG);
+		pickedSong = (PickedSongInfo) intent.getSerializableExtra(IntentHelper.INTENT_PICKED_SONG);
 		
 		displayScriptureText();
 		HistoryHelper.saveRecord(thisActivity, pickedSong.getSong());
@@ -77,7 +80,7 @@ public class ScriptureActivity extends Activity {
     }
 
 	private void applyFontSize() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
 		textField.setTextSize(settings.getInt("fontSize", 18));
 	}
 
@@ -87,13 +90,19 @@ public class ScriptureActivity extends Activity {
 			case R.id.night_day_mode:
 	    		switchNightDayMode();
 	    		return true;
+			case R.id.normal_presentation_mode:
+				switchNormalPresentationMode();
+				return true;
+			case R.id.export_TXT:
+				new ExportTask().execute();
+	    		return true;
 			case R.id.show_pick_activity:
 				Intent intent = new Intent(this, MainActivity.class);
 			    startActivity(intent);
 	            return true;
 			case R.id.show_settings:
 	    		Intent intent3 = new Intent(this, SettingsActivity.class);
-	    		intent3.putExtra(SettingsActivity.INTENT_FOR_SETTINGS, true);
+	    		intent3.putExtra(IntentHelper.INTENT_FOR_SETTINGS, thisActivity.getLocalClassName());
 			    startActivity(intent3);
 	            return true;
 			case R.id.show_about:
@@ -113,9 +122,20 @@ public class ScriptureActivity extends Activity {
 		    applyNightMode();
         }
 	}
+	
+	private void switchNormalPresentationMode() {
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("presentationMode", true);
+	    editor.commit();
+	    
+	    Intent intent = new Intent(thisActivity, SlideActivity.class);
+		intent.putExtra(IntentHelper.INTENT_PICKED_SONG, pickedSong);
+	    startActivity(intent);
+	}
 
 	private void displayScriptureText() {
-		Song song = datasource.getSongById(pickedSong.getSong());
+		song = datasource.getSongById(pickedSong.getSong());
 		textField.append(Html.fromHtml(song.getText()));
 		this.setTitle(song.getNumber() + " " + song.getTitle());
 	}
@@ -126,13 +146,37 @@ public class ScriptureActivity extends Activity {
 	    startActivity(intent);
 	}
 	
+	private class ExportTask extends AsyncTask<Void, Void, Void> {
+		private boolean success = false;
+		
+        @Override
+        protected Void doInBackground(Void... params) {
+        	success = ExportHelper.export(thisActivity, song.getText());
+        	return null;
+        }
+        
+        protected void onPostExecute(Void result) {
+        	if (success) {
+        		Toast toast = Toast.makeText(getApplicationContext(), 
+    				getResources().getString(R.string.export_success) + ExportHelper.EXPORT_DIR + "/",
+    				Toast.LENGTH_SHORT);
+    		    toast.show();
+        	} else {
+        		Toast toast = Toast.makeText(getApplicationContext(), 
+					getResources().getString(R.string.export_fail),
+					Toast.LENGTH_SHORT);
+			    toast.show();
+        	}
+        }
+    }
+	
 	private boolean isKeepScreenOn() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("keepScreenOn", false);
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
@@ -148,7 +192,7 @@ public class ScriptureActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

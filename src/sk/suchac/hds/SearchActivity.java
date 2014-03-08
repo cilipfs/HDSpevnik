@@ -1,6 +1,8 @@
 package sk.suchac.hds;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.SearchOrder;
 import android.app.Activity;
 import android.content.Intent;
@@ -32,13 +34,10 @@ public class SearchActivity extends Activity {
 	
 	private static Resources resources;
 	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 	
 	private static final int SEARCH_STRING_MAX_LETTERS = 40;
 	private static final int SEARCH_STRING_MIN_LETTERS = 2;
-	
-	public final static String INTENT_SEARCH_ORDER = "sk.suchac.hds.SEARCH_ORDER";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +112,7 @@ public class SearchActivity extends Activity {
 			if (validateSearchString(searchString)) {
 				SearchOrder order = new SearchOrder(searchString);
 				Intent intent = new Intent(thisActivity, SearchResultsActivity.class);
-			    intent.putExtra(INTENT_SEARCH_ORDER, order);
+			    intent.putExtra(IntentHelper.INTENT_SEARCH_ORDER, order);
 			    startActivity(intent);
 			}
 		}
@@ -156,7 +155,7 @@ public class SearchActivity extends Activity {
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
@@ -174,7 +173,7 @@ public class SearchActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

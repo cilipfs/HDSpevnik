@@ -66,28 +66,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/lay_presentationMode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="5dp"
-        android:paddingTop="10dp" >
-
-        <CheckBox
-            android:id="@+id/setting_cb_presentationMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_presentationMode" />
-
-        <TextView
-            android:id="@+id/setting_tv_presentationMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_presentationMode_text" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/lay_presentation_fontSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

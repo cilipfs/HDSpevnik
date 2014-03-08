@@ -1,5 +1,6 @@
 package sk.suchac.hds;
 
+import sk.suchac.hds.helpers.PreferencesHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +18,6 @@ public class AboutActivity extends Activity {
 	
 	private Resources resources;
 	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
 
 	@Override
@@ -75,7 +75,7 @@ public class AboutActivity extends Activity {
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
@@ -91,7 +91,7 @@ public class AboutActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

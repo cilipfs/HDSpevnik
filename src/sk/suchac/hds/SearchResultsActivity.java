@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.SearchOrder;
 import sk.suchac.hds.objects.SearchResult;
@@ -36,12 +38,8 @@ public class SearchResultsActivity extends Activity {
 	
 	private static Resources resources;
 	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
-	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
-	public static final String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
-	public final static String INTENT_SEARCH_ORDER = "sk.suchac.hds.SEARCH_ORDER";
 	SearchOrder order = new SearchOrder();
 	
 	private static final int MAX_RESULTS_DISPLAY = 100;
@@ -59,7 +57,7 @@ public class SearchResultsActivity extends Activity {
 		resultsContainer = (LinearLayout) findViewById(R.id.search_results_container);
 		
 		Intent intent = getIntent();
-		order = (SearchOrder) intent.getSerializableExtra(SearchActivity.INTENT_SEARCH_ORDER);
+		order = (SearchOrder) intent.getSerializableExtra(IntentHelper.INTENT_SEARCH_ORDER);
 		
 		datasource = new DAO(this);
 		datasource.open();
@@ -182,7 +180,7 @@ public class SearchResultsActivity extends Activity {
         						intent = new Intent(thisActivity, ScriptureActivity.class);
         					}
         				 PickedSongInfo sp = new PickedSongInfo(sResult.getSongId());
-        				 intent.putExtra(INTENT_PICKED_SONG, sp);
+        				 intent.putExtra(IntentHelper.INTENT_PICKED_SONG, sp);
         				 startActivity(intent);
         			 }
         		 });
@@ -213,13 +211,13 @@ public class SearchResultsActivity extends Activity {
     }
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
 	
 	private boolean isPresentationMode() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("presentationMode", false);
 	}
 	
@@ -250,7 +248,7 @@ public class SearchResultsActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

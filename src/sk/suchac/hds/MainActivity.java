@@ -3,6 +3,8 @@ package sk.suchac.hds;
 import java.util.List;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.Song;
 import android.app.Activity;
@@ -42,11 +44,8 @@ public class MainActivity extends Activity {
 	
 	private boolean updateDbDone = false;
 	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
-	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
-	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	PickedSongInfo picked = new PickedSongInfo();
 
     @Override
@@ -165,7 +164,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
         				intent = new Intent(thisActivity, ScriptureActivity.class);
         			}
 				    PickedSongInfo sp = new PickedSongInfo(which + 1);
-					intent.putExtra(INTENT_PICKED_SONG, sp);
+					intent.putExtra(IntentHelper.INTENT_PICKED_SONG, sp);
 				    startActivity(intent);
         			datasource.close();
             	}
@@ -186,7 +185,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
         				intent = new Intent(thisActivity, ScriptureActivity.class);
         			}
 				    PickedSongInfo sp = new PickedSongInfo(songsAlphabetical.get(which).get_id());
-					intent.putExtra(INTENT_PICKED_SONG, sp);
+					intent.putExtra(IntentHelper.INTENT_PICKED_SONG, sp);
 				    startActivity(intent);
         			datasource.close();
             	}
@@ -220,7 +219,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 				intent = new Intent(thisActivity, ScriptureActivity.class);
 			}
 		    PickedSongInfo sp = new PickedSongInfo(song.get_id());
-			intent.putExtra(INTENT_PICKED_SONG, sp);
+			intent.putExtra(IntentHelper.INTENT_PICKED_SONG, sp);
 		    startActivity(intent);
 		    
 		    datasource.close();
@@ -263,17 +262,17 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 	// onClick for buttonPick
 	public void showPickedScripture(View view) {
 		Intent intent = new Intent(this, ScriptureActivity.class);
-	    intent.putExtra(INTENT_PICKED_SONG, picked);
+	    intent.putExtra(IntentHelper.INTENT_PICKED_SONG, picked);
 	    startActivity(intent);
 	}
 	
 	private boolean isPresentationMode() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("presentationMode", false);
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
@@ -291,7 +290,7 @@ private class UpdateDBTask extends AsyncTask<Void, Void, Void> {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();

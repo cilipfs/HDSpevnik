@@ -5,12 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.ExportHelper;
 import sk.suchac.hds.helpers.HistoryHelper;
+import sk.suchac.hds.helpers.HtmlHelper;
+import sk.suchac.hds.helpers.IntentHelper;
+import sk.suchac.hds.helpers.PreferencesHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.Song;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -20,6 +25,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SlideActivity extends Activity {
 	
@@ -30,20 +36,14 @@ public class SlideActivity extends Activity {
 	private View background;
 	
 	private DAO datasource;
+	private Song song;
 	
 	// SLIDEFLOW napr. pre 4 odstavce: 12341
-	private static final String SLIDE_BRAKE_TAG = "<sldbrk />";
-	private static final String SLIDE_BRAKE_ALTERNATIVE = "<br /><br />";
 	private List<String> slidesInOrder = new ArrayList<String>();
 	private int slidesPointer = 0;
 	
-	public final static String INTENT_FOR_SETTINGS = "sk.suchac.hds.FOR_SETTINGS";
-	
-	public static final String PREFS = "HdsPrefsFile";
 	private static boolean nightMode;
-	public static final String SETTINGS_PREFS = "HdsSettingsPrefs";
 	
-	public final static String INTENT_PICKED_SONG = "sk.suchac.hds.PICKED_SONG";
 	PickedSongInfo pickedSong = new PickedSongInfo();
 
 	@Override
@@ -64,7 +64,7 @@ public class SlideActivity extends Activity {
 		goToPreviousSlide.setOnTouchListener(goToPreviousSlideTouchListener);
 		
 		Intent intent = getIntent();
-		pickedSong = (PickedSongInfo) intent.getSerializableExtra(MainActivity.INTENT_PICKED_SONG);
+		pickedSong = (PickedSongInfo) intent.getSerializableExtra(IntentHelper.INTENT_PICKED_SONG);
 		
 		displayScriptureText();
 		HistoryHelper.saveRecord(thisActivity, pickedSong.getSong());
@@ -136,7 +136,7 @@ public class SlideActivity extends Activity {
     }
 
 	private void applyFontSize() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
 		textField.setTextSize(settings.getInt("presentationFontSize", 20));
 	}
 
@@ -146,13 +146,19 @@ public class SlideActivity extends Activity {
 			case R.id.night_day_mode:
 	    		switchNightDayMode();
 	    		return true;
+			case R.id.normal_presentation_mode:
+				switchNormalPresentationMode();
+				return true;
+			case R.id.export_TXT:
+				new ExportTask().execute();
+	    		return true;
 			case R.id.show_pick_activity:
 				Intent intent = new Intent(this, MainActivity.class);
 			    startActivity(intent);
 	            return true;
 			case R.id.show_settings:
 	    		Intent intent3 = new Intent(this, SettingsActivity.class);
-	    		intent3.putExtra(SettingsActivity.INTENT_FOR_SETTINGS, true);
+	    		intent3.putExtra(IntentHelper.INTENT_FOR_SETTINGS, thisActivity.getLocalClassName());
 			    startActivity(intent3);
 	            return true;
 			case R.id.show_about:
@@ -162,7 +168,7 @@ public class SlideActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void switchNightDayMode() {
 		if (nightMode) {
 			saveNightModeState(false);
@@ -172,18 +178,29 @@ public class SlideActivity extends Activity {
 		    applyNightMode();
         }
 	}
+	
+	private void switchNormalPresentationMode() {
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("presentationMode", false);
+	    editor.commit();
+		
+	    Intent intent = new Intent(thisActivity, ScriptureActivity.class);
+		intent.putExtra(IntentHelper.INTENT_PICKED_SONG, pickedSong);
+	    startActivity(intent);
+	}
 
 	private void displayScriptureText() {
-		Song song = datasource.getSongById(pickedSong.getSong());
+		song = datasource.getSongById(pickedSong.getSong());
 		String songText = song.getText();
 		String[] slides = null;
 		String slidesOrder = song.getSlideFlow();
 		
-		if (songText.indexOf(SLIDE_BRAKE_TAG) != -1) {
-			slides = songText.split(SLIDE_BRAKE_TAG);
+		if (songText.indexOf(HtmlHelper.SLIDE_BRAKE_TAG) != -1) {
+			slides = songText.split(HtmlHelper.SLIDE_BRAKE_TAG);
 			trimSlides(slides);
 		} else {
-			slides = songText.split(SLIDE_BRAKE_ALTERNATIVE);
+			slides = songText.split(HtmlHelper.SLIDE_BRAKE_ALTERNATIVE);
 		}
 		
 		if (slidesOrder != null) {
@@ -205,11 +222,12 @@ public class SlideActivity extends Activity {
 	
 	private void trimSlides(String[] slides) {
 		for (int i = 0; i < slides.length; i++) {
-			if (slides[i].indexOf(SLIDE_BRAKE_ALTERNATIVE) == 0) {
-				slides[i] = slides[i].substring(0 + SLIDE_BRAKE_ALTERNATIVE.length());
+			if (slides[i].indexOf(HtmlHelper.SLIDE_BRAKE_ALTERNATIVE) == 0) {
+				slides[i] = slides[i].substring(0 + HtmlHelper.SLIDE_BRAKE_ALTERNATIVE.length());
 			}
-			if (slides[i].lastIndexOf(SLIDE_BRAKE_ALTERNATIVE) == slides[i].length() - SLIDE_BRAKE_ALTERNATIVE.length()) {
-				slides[i] = slides[i].substring(0, slides[i].length() - SLIDE_BRAKE_ALTERNATIVE.length());
+			if (slides[i].lastIndexOf(HtmlHelper.SLIDE_BRAKE_ALTERNATIVE) 
+					== slides[i].length() - HtmlHelper.SLIDE_BRAKE_ALTERNATIVE.length()) {
+				slides[i] = slides[i].substring(0, slides[i].length() - HtmlHelper.SLIDE_BRAKE_ALTERNATIVE.length());
 			}
 		}
 	}
@@ -220,13 +238,37 @@ public class SlideActivity extends Activity {
 	    startActivity(intent);
 	}
 	
+	private class ExportTask extends AsyncTask<Void, Void, Void> {
+		private boolean success = false;
+		
+        @Override
+        protected Void doInBackground(Void... params) {
+        	success = ExportHelper.export(thisActivity, song.getText());
+        	return null;
+        }
+        
+        protected void onPostExecute(Void result) {
+        	if (success) {
+        		Toast toast = Toast.makeText(getApplicationContext(), 
+    				getResources().getString(R.string.export_success) + ExportHelper.EXPORT_DIR + "/",
+    				Toast.LENGTH_SHORT);
+    		    toast.show();
+        	} else {
+        		Toast toast = Toast.makeText(getApplicationContext(), 
+					getResources().getString(R.string.export_fail),
+					Toast.LENGTH_SHORT);
+			    toast.show();
+        	}
+        }
+    }
+	
 	private boolean isKeepScreenOn() {
-		SharedPreferences settings = getSharedPreferences(SETTINGS_PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("keepScreenOn", false);
 	}
 	
 	private boolean isNightMode() {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
         nightMode = settings.getBoolean("nightMode", false);
 		return nightMode;
 	}
@@ -246,7 +288,7 @@ public class SlideActivity extends Activity {
 	}
 	
 	private void saveNightModeState(boolean night) {
-		SharedPreferences settings = getSharedPreferences(PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.PREFS, 0);
 	    SharedPreferences.Editor editor = settings.edit();
 	    editor.putBoolean("nightMode", night);
 	    editor.commit();
