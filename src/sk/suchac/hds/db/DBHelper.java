@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static String DB_NAME = "hdsdb";
-	private static final int DB_VERSION = 13;
+	private static final int DB_VERSION = 32;
 
 	private SQLiteDatabase myDataBase;
 
@@ -53,14 +53,13 @@ public class DBHelper extends SQLiteOpenHelper {
 		if (dbVersion == DB_VERSION) {
 //			Log.i(DBHelper.class.getSimpleName(), "DB exists");
 		} else {
-			if (dbVersion == -1) {
-				// By calling this method and empty database will be created into
-				// the default system path
-				// of your application so we are gonna be able to overwrite that
-				// database with our database.
-				this.getReadableDatabase();
-				this.close();
-			}
+			// By calling this method and empty database will be created into
+			// the default system path
+			// of your application so we are gonna be able to overwrite that
+			// database with our database.
+			myContext.deleteDatabase(DB_NAME);
+			this.getReadableDatabase();
+			this.close();
 			try {
 				copyDataBase();
 				openDataBaseToWrite().setVersion(DB_VERSION);

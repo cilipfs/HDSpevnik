@@ -63,5 +63,6 @@
     <string name="export_success">Úspešne exportované do: download/</string>
     
     <string name="normal_presentation_mode_title">Text/prezentácia</string>
+    <string name="chords_mode_title">Akordy I/0</string>
 
 </resources>

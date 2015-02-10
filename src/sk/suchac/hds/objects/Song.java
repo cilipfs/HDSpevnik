@@ -15,6 +15,7 @@ public class Song implements Comparable<Song> {
 	private String title;
 	private String text;
 	private String slideFlow;
+	private String tags;
 	
 	public String getSlideFlow() {
 		return slideFlow;
@@ -46,6 +47,12 @@ public class Song implements Comparable<Song> {
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 	
 	public int compareTo(Song song) {

@@ -1,6 +1,7 @@
 package sk.suchac.hds;
 
 import sk.suchac.hds.db.DAO;
+import sk.suchac.hds.helpers.TagsHelper;
 import sk.suchac.hds.helpers.ExportHelper;
 import sk.suchac.hds.helpers.HistoryHelper;
 import sk.suchac.hds.helpers.IntentHelper;
@@ -48,6 +49,7 @@ public class ScriptureActivity extends Activity {
 		Intent intent = getIntent();
 		pickedSong = (PickedSongInfo) intent.getSerializableExtra(IntentHelper.INTENT_PICKED_SONG);
 		
+		song = datasource.getSongById(pickedSong.getSong());
 		displayScriptureText();
 		HistoryHelper.saveRecord(thisActivity, pickedSong.getSong());
         
@@ -77,6 +79,7 @@ public class ScriptureActivity extends Activity {
         }
         
         applyFontSize();
+        displayScriptureText();
     }
 
 	private void applyFontSize() {
@@ -92,6 +95,9 @@ public class ScriptureActivity extends Activity {
 	    		return true;
 			case R.id.normal_presentation_mode:
 				switchNormalPresentationMode();
+				return true;
+			case R.id.chords_mode:
+				switchChordsMode();
 				return true;
 			case R.id.export_TXT:
 				new ExportTask().execute();
@@ -133,10 +139,27 @@ public class ScriptureActivity extends Activity {
 		intent.putExtra(IntentHelper.INTENT_PICKED_SONG, pickedSong);
 	    startActivity(intent);
 	}
+	
+	private void switchChordsMode() {
+		boolean chordsMode = isChordsMode();
+		
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("chordsMode", !chordsMode);
+	    editor.commit();
+	    
+	    displayScriptureText();
+	}
 
 	private void displayScriptureText() {
-		song = datasource.getSongById(pickedSong.getSong());
-		textField.append(Html.fromHtml(song.getText()));
+		String text = "";
+		if (isChordsMode()) {
+			text = TagsHelper.getFormattedTextWithChords(song);
+		} else {
+			text = TagsHelper.getFormattedText(song);
+		}
+		
+		textField.setText(Html.fromHtml(text));
 		this.setTitle(song.getNumber() + " " + song.getTitle());
 	}
 	
@@ -173,6 +196,11 @@ public class ScriptureActivity extends Activity {
 	private boolean isKeepScreenOn() {
 		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
         return settings.getBoolean("keepScreenOn", false);
+	}
+	
+	private boolean isChordsMode() {
+		SharedPreferences settings = getSharedPreferences(PreferencesHelper.SETTINGS_PREFS, 0);
+		return settings.getBoolean("chordsMode", false);
 	}
 	
 	private boolean isNightMode() {

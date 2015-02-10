@@ -10,6 +10,7 @@ import sk.suchac.hds.helpers.HistoryHelper;
 import sk.suchac.hds.helpers.HtmlHelper;
 import sk.suchac.hds.helpers.IntentHelper;
 import sk.suchac.hds.helpers.PreferencesHelper;
+import sk.suchac.hds.helpers.TagsHelper;
 import sk.suchac.hds.objects.PickedSongInfo;
 import sk.suchac.hds.objects.Song;
 import android.app.Activity;
@@ -66,6 +67,7 @@ public class SlideActivity extends Activity {
 		Intent intent = getIntent();
 		pickedSong = (PickedSongInfo) intent.getSerializableExtra(IntentHelper.INTENT_PICKED_SONG);
 		
+		song = datasource.getSongById(pickedSong.getSong());
 		displayScriptureText();
 		HistoryHelper.saveRecord(thisActivity, pickedSong.getSong());
         
@@ -191,8 +193,7 @@ public class SlideActivity extends Activity {
 	}
 
 	private void displayScriptureText() {
-		song = datasource.getSongById(pickedSong.getSong());
-		String songText = song.getText();
+		String songText = TagsHelper.getFormattedText(song);
 		String[] slides = null;
 		String slidesOrder = song.getSlideFlow();
 		

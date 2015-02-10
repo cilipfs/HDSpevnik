@@ -29,4 +29,8 @@ public class HtmlHelper {
 	public static String getSkipLine() {
 		return "<br /><br />";
 	}
+	
+	public static String chord(String chord) {
+		return "<font color=\"#B10006\"><i><sup>" + chord + "</sup></i></font>";
+	}
 }

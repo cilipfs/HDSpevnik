@@ -11,13 +11,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DAO {
 	// Database fields
 	  private SQLiteDatabase database;
 	  private DBHelper dbHelper;
 	  private String[] allSongColumns = { "_id",
-	      "NUMBER", "TITLE", "TEXT", "SLIDEFLOW" };
+	      "NUMBER", "TITLE", "TEXT", "SLIDEFLOW", "TAGS" };
 
 	  public DAO(Context context) {
 		  dbHelper = new DBHelper(context);
@@ -120,6 +121,7 @@ public class DAO {
 		  song.setTitle(cursor.getString(2));
 		  song.setText(cursor.getString(3));
 		  song.setSlideFlow(cursor.getString(4));
+		  song.setTags(cursor.getString(5));
 		  return song;
 	  }
 	  
